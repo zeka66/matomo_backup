@@ -1,0 +1,34 @@
+- hosts: localhost
+  become: yes
+
+  tasks:
+
+    - name: Create new dir for matomo script
+      file:
+        path: /etc/ansible/scripts2
+        state: directory
+        owner: root
+        group: root
+        mode: 0700
+
+    # Copy matomo script to remote machine
+    - copy:
+        src:  /etc/ansible/scripts/test1.sh
+        dest: /etc/ansible/scripts2/
+        owner: root
+        group: root
+        mode: 0755
+
+    # Run matomo dump script on remote machine
+    - name: Script execution
+      command: sh /etc/ansible/scripts2/test1.sh
+
+    #Create cronjob to run script
+    - name: Create cronjob for matomo db dump and backup
+      cron:
+        name: run matomo backup
+        user: root
+        hour: 5
+        minute: 0
+        job: "/bin/sh /etc/ansible/scripts/test1.sh"
+        state: present
