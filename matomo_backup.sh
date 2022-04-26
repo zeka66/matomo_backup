@@ -2,27 +2,26 @@
 
 ### Variables ###
 
-DB_BACKUP_PATH='/backup/dbmatomo'
-DB_USER='root'
-DB_PASS='abc'
-DB_NAME='matomo'
-DB_PORT='3306'
-DATE=$(date '+%d.%m.%Y_%T')
-BUCKET_NAME='devops-backup-storage'
+db_backup_path='/backup/matomodb/'
+db_user='root'
+db_pass='abc'
+db_name='matomo'
+db_port='3306'
+date=$(date '+%d.%m.%Y_%T')
 
 ### Matomo backup and archive ###
 
-mkdir -p ${DB_BACKUP_PATH}
-echo "Backup started for database - ${DB_NAME}"
+mkdir -p ${db_backup_path}
+echo "Backup started for database - ${db_name}"
 
 sudo mysqldump\
-        -P${DB_PORT}\
-      	-u${DB_USER}\
-       	-p${DB_PASS}\
-      	--no-tablespaces ${DB_NAME} | gzip -c >${DB_BACKUP_PATH}/${DATE}.gz
+	-P${db_port}\
+      	-u${db_user}\
+       	-p${db_pass}\
+      	--no-tablespaces ${db_name} | gzip -c >${db_backup_path}/${date}.gz
 
-echo "${DB_NAME} DB backup completed"
+echo "${db_name} DB backup completed"
 
 ### Copy backup to S3 bucket ###
 
-aws s3 mv ../backup/dbmatomo/*.gz s3://$BUCKET_NAME/ --quiet --storage-class STANDARD
+aws s3 sync //backup/matomodb/ s3://devops-backup-storage/matomo_backup/ --delete --profile holmtestprofile
