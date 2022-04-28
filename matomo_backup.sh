@@ -8,7 +8,7 @@ db_pass='abc'
 db_name='matomo'
 db_port='3306'
 date=$(date '+%d.%m.%Y_%T')
-rt='0'
+rt='0' #Retention perios
 
 ### Matomo backup and archive ###
 
