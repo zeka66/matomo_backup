@@ -1,0 +1,6 @@
+
+----------------------------
+db_pass: "{{ vault_db_pass }}"
+db_user: "{{ vault_db_user }}"
+fgq
+fwf
