@@ -1,8 +1,14 @@
+#AWS CLI and AWS-IAM-Auth. are already installed on the machine.
+
 - hosts: localhost
   become: yes
+  vars_files:
+    - /etc/ansible/matomo/matomo_vars.yaml
+    - /etc/ansible/matomo/matomo_secrets.yaml
+
 
   tasks:
-
+    # Create new dir for matomo script on remote machine
     - name: Create new dir for matomo script
       file:
         path: /backup/matomodb/scripts
@@ -12,7 +18,7 @@
         mode: 0700
 
     # Copy matomo script to remote machine
-    - copy:
+    - ansible.builtin.template:
         src:  /etc/ansible/scripts/matomo_mysql_bck.sh
         dest: /backup/matomodb/scripts
         owner: root
@@ -22,7 +28,7 @@
     #Create cronjob to run script to run @5:00
     - name: Create cronjob to for db dump and backup
       cron:
-        name: run matomo backup
+        name: Run matomo backup
         user: root
         hour: 5
         minute: 0
