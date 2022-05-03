@@ -1,0 +1,35 @@
+- name: Create .aws configuration diretory
+    become: false
+    ansible.builtin.file:
+      name: /home/ubuntu/.aws
+      owner: ubuntu
+      group: ubuntu
+      state: directory
+      mode: 0770
+    tags:
+      - grafana
+
+    - name: Create aws profile for s3 upload
+      become: false
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: ubuntu
+        group: ubuntu
+        mode: 0660
+      loop:
+        - { src: 'grafana/aws_config.j2', dest: '/home/ubuntu/.aws/config' }
+        - { src: 'grafana/aws_credentials.j2', dest: '/home/ubuntu/.aws/credentials' }
+      tags:
+        - grafana
+
+    - name: Create backup script
+      become: false
+      ansible.builtin.copy:
+        src: grafana/grafana-backup.sh
+        dest: /home/ubuntu/grafana-backup.sh
+        mode: 0750
+        owner: ubuntu
+        group: ubuntu
+      tags:
+        - grafana

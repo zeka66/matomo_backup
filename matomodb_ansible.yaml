@@ -1,0 +1,8 @@
+#AWS CLI and AWS-IAM-Auth. are already installed on the machine.
+
+- hosts: localhost
+  become: yes
+            - name: Download Database to server
+            shell: |
+              mysqldump -u root -p abs matomo --single-transaction
+            no_log: true
